@@ -12,6 +12,7 @@
         <activity android:name=".HomeScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
