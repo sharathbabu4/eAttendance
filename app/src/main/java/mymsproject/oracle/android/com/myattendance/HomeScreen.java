@@ -1,5 +1,6 @@
 package mymsproject.oracle.android.com.myattendance;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,7 +9,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import mymsproject.oracle.android.com.myattendance.Adapter.GridAdapter;
 
@@ -16,34 +29,47 @@ public class HomeScreen extends AppCompatActivity {
 
   private DrawerLayout mDrawerLayout;
 
+  private IntentIntegrator qrScan;
+
+  private List<String> mainList = new ArrayList();
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home_screen);
 
-    mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+    mDrawerLayout = findViewById(R.id.drawer_layout);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     ActionBar actionbar = getSupportActionBar();
     actionbar.setDisplayHomeAsUpEnabled(true);
     actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+    mainList.clear();
+    mainList.add(0, "QR-Code Scanner");
+    mainList.add(1, "Attendance Report");
+    mainList.add(2, "Marks Report");
+    mainList.add(3, "My-Statistics");
+
+    qrScan = new IntentIntegrator(this);
 
     GridView gridView = findViewById(R.id.gridview);
-    GridAdapter gridAdapter =  new GridAdapter(this, mDrawerLayout.getHeight());
+    GridAdapter gridAdapter = new GridAdapter(this, mainList);
     gridView.setAdapter(gridAdapter);
+    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position == 0) {
+          qrScan.initiateScan();
+        }
+      }
+    });
 
-    NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+    NavigationView navigationView = findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
       @Override
       public boolean onNavigationItemSelected(MenuItem menuItem) {
-        // set item as selected to persist highlight
         menuItem.setChecked(true);
-        // close drawer when item is tapped
         mDrawerLayout.closeDrawers();
-
-        // Add code here to update the UI based on the item selected
-        // For example, swap UI fragments here
-
         return true;
       }
     });
@@ -57,5 +83,25 @@ public class HomeScreen extends AppCompatActivity {
         return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+    if (result != null) {
+      if (result.getContents() == null) {
+        Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
+      } else {
+        try {
+          JSONObject obj = new JSONObject(result.getContents());
+          Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+        } catch (JSONException e) {
+          e.printStackTrace();
+          Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+        }
+      }
+    } else {
+      super.onActivityResult(requestCode, resultCode, data);
+    }
   }
 }

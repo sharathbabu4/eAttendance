@@ -19,16 +19,9 @@ public class GridAdapter extends BaseAdapter {
 
   private Context context;
 
-  private int layoutHeight;
-
-  public GridAdapter(Context context, int height) {
-    this.layoutHeight = height;
+  public GridAdapter(Context context, List list) {
     this.context = context;
-    mainList.clear();
-    mainList.add(0, "QR-Code Scanner");
-    mainList.add(1, "Attendance Report");
-    mainList.add(2, "Marks Report");
-    mainList.add(3, "My-Statistics");
+this.mainList = list;
   }
 
   @Override
@@ -54,9 +47,27 @@ public class GridAdapter extends BaseAdapter {
     }
     ImageView image = convertView.findViewById(R.id.grid_image_view);
     TextView text = convertView.findViewById(R.id.grid_text_view);
-    image.setImageResource(R.drawable.menu_profile);
+    image.setImageResource(getImage(position));
     text.setText(getItem(position).toString());
-    convertView.setMinimumHeight(layoutHeight / 2);
     return convertView;
+  }
+
+  public int getImage(int position){
+    int resource = R.drawable.menu_profile;
+    switch(position){
+      case 0:
+        resource = R.drawable.ic_photo_scan_black;
+        break;
+      case 1:
+        resource = R.drawable.ic_people_attendance;
+        break;
+      case 2:
+        resource = R.drawable.ic_marks_black;
+        break;
+      case 3:
+        resource = R.drawable.ic_statistics;
+        break;
+    }
+    return resource;
   }
 }
