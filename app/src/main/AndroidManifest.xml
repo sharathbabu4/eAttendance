@@ -10,12 +10,14 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-    <activity android:name=".HomeScreen">
+    <activity android:name=".LoginActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity android:name=".HomeScreen"></activity>
+    <activity android:name=".RegisterActivity"></activity>
   </application>
 
 </manifest>
