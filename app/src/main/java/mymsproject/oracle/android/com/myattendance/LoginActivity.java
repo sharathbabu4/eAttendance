@@ -15,10 +15,14 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   public void loginClick(View v) {
-    startActivity(new Intent(this, HomeScreen.class));
+    Intent intent = new Intent(this, HomeScreen.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 
-  public void registerClick(View v){
-    startActivity(new Intent(this, RegisterActivity.class));
+  public void registerClick(View v) {
+    Intent intent = new Intent(this, RegisterActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 }

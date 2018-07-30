@@ -68,6 +68,13 @@ public class HomeScreen extends AppCompatActivity {
     navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
       @Override
       public boolean onNavigationItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+          case R.id.nav_signout:
+            Intent intent = new Intent(HomeScreen.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            break;
+        }
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
         return true;
@@ -81,6 +88,9 @@ public class HomeScreen extends AppCompatActivity {
       case android.R.id.home:
         mDrawerLayout.openDrawer(GravityCompat.START);
         return true;
+      case R.id.nav_signout:
+        startActivity(new Intent(HomeScreen.this, LoginActivity.class));
+        break;
     }
     return super.onOptionsItemSelected(item);
   }
