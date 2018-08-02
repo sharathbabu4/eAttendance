@@ -1,10 +1,13 @@
-package mymsproject.oracle.android.com.myattendance;
+package mymsproject.oracle.android.com.myattendance.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import mymsproject.oracle.android.com.myattendance.Activity.LoginActivity;
+import mymsproject.oracle.android.com.myattendance.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -15,6 +18,8 @@ public class RegisterActivity extends AppCompatActivity {
   }
 
   public void registerClick(View v) {
-    startActivity(new Intent(this, LoginActivity.class));
+    Intent intent = new Intent(this, LoginActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 }
