@@ -30,10 +30,4 @@ public class StatsActivity extends AppCompatActivity {
       textView.setText("My Attendance");
     }
   }
-
-  public void registerClick(View v) {
-    Intent intent = new Intent(this, LoginActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
-  }
 }
