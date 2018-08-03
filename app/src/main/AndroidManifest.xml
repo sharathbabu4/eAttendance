@@ -18,6 +18,8 @@
     </activity>
     <activity android:name=".Activity.HomeScreen"></activity>
     <activity android:name=".Activity.RegisterActivity"></activity>
+    <activity android:name=".Activity.StatsActivity"></activity>
+
   </application>
 
 </manifest>
