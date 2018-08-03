@@ -61,6 +61,11 @@ public class HomeScreen extends AppCompatActivity {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
           qrScan.initiateScan();
+        } else {
+          Intent intent = new Intent(HomeScreen.this, StatsActivity.class);
+          intent.putExtra("position", position);
+          intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+          startActivity(intent);
         }
       }
     });
