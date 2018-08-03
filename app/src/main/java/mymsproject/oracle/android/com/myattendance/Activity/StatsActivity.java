@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import mymsproject.oracle.android.com.myattendance.R;
 
@@ -17,12 +18,16 @@ public class StatsActivity extends AppCompatActivity {
     setContentView(R.layout.stats_layout_main);
     int pos = getIntent().getIntExtra("position", 1);
     ImageView imageView = findViewById(R.id.stats_image_view);
+    TextView textView = findViewById(R.id.stats_textview);
     if (pos == 2) {
       imageView.setImageResource(R.drawable.marks);
+      textView.setText("My Marks Sheet");
     } else if (pos == 3) {
       imageView.setImageResource(R.drawable.stats);
+      textView.setText("My Statistics");
     } else {
       imageView.setImageResource(R.drawable.attendance);
+      textView.setText("My Attendance");
     }
   }
 
