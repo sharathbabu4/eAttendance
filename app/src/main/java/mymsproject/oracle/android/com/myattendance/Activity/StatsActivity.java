@@ -17,14 +17,13 @@ public class StatsActivity extends AppCompatActivity {
     setContentView(R.layout.stats_layout_main);
     int pos = getIntent().getIntExtra("position", 1);
     ImageView imageView = findViewById(R.id.stats_image_view);
-    if(pos == 2){
+    if (pos == 2) {
       imageView.setImageResource(R.drawable.marks);
-    } else if(pos == 3){
+    } else if (pos == 3) {
       imageView.setImageResource(R.drawable.stats);
-    }else {
+    } else {
       imageView.setImageResource(R.drawable.attendance);
     }
-
   }
 
   public void registerClick(View v) {

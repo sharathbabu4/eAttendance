@@ -21,7 +21,7 @@ public class GridAdapter extends BaseAdapter {
 
   public GridAdapter(Context context, List list) {
     this.context = context;
-this.mainList = list;
+    this.mainList = list;
   }
 
   @Override
@@ -52,9 +52,9 @@ this.mainList = list;
     return convertView;
   }
 
-  public int getImage(int position){
+  public int getImage(int position) {
     int resource = R.drawable.menu_profile;
-    switch(position){
+    switch (position) {
       case 0:
         resource = R.drawable.ic_photo_scan_black;
         break;

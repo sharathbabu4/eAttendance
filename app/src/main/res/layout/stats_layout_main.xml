@@ -3,16 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="70dp"
-    android:paddingTop="70dp"
     android:background="@drawable/ic_grid_background">
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="My Attendance"
+      android:paddingTop="20dp"
+      android:layout_gravity="center"
+      android:textSize="18sp"
+      android:textStyle="bold|italic" />
 
   <ImageView
       android:id="@+id/stats_image_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:padding="20dp"
-      android:src="@drawable/stats"/>
+      android:src="@drawable/stats" />
 
 </LinearLayout>

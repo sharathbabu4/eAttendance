@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">MyAttendance</string>
+  <string name="app_name">Prezenta</string>
   <string name="my_profile">My Profile</string>
   <string name="change_password">Change Password</string>
   <string name="sign_out">Sign Out</string>
