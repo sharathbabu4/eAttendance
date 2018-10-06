@@ -19,6 +19,8 @@
     <activity android:name=".Activity.HomeScreen"></activity>
     <activity android:name=".Activity.RegisterActivity"></activity>
     <activity android:name=".Activity.StatsActivity"></activity>
+    <activity android:name=".Activity.ProfileActivity"></activity>
+    <activity android:name=".Activity.ChangePasswordActivity"></activity>
 
   </application>
 

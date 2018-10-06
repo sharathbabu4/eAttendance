@@ -13,13 +13,13 @@ import java.util.List;
 
 import mymsproject.oracle.android.com.myattendance.R;
 
-public class GridAdapter extends BaseAdapter {
+public class ListAdapter extends BaseAdapter {
 
   private List<String> mainList = new ArrayList();
 
   private Context context;
 
-  public GridAdapter(Context context, List list) {
+  public ListAdapter(Context context, List list) {
     this.context = context;
     this.mainList = list;
   }

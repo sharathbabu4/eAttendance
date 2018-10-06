@@ -1,17 +1,19 @@
 package mymsproject.oracle.android.com.myattendance.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -23,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import mymsproject.oracle.android.com.myattendance.Adapter.GridAdapter;
+import mymsproject.oracle.android.com.myattendance.Adapter.ListAdapter;
 import mymsproject.oracle.android.com.myattendance.R;
 
 public class HomeScreen extends AppCompatActivity {
@@ -48,15 +50,13 @@ public class HomeScreen extends AppCompatActivity {
     mainList.clear();
     mainList.add(0, "QR-Code Scanner");
     mainList.add(1, "Attendance Report");
-    mainList.add(2, "Marks Report");
-    mainList.add(3, "My-Statistics");
 
     qrScan = new IntentIntegrator(this);
 
-    GridView gridView = findViewById(R.id.gridview);
-    GridAdapter gridAdapter = new GridAdapter(this, mainList);
-    gridView.setAdapter(gridAdapter);
-    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    ListView listView = findViewById(R.id.listview);
+    ListAdapter gridAdapter = new ListAdapter(this, mainList);
+    listView.setAdapter(gridAdapter);
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
@@ -79,6 +79,22 @@ public class HomeScreen extends AppCompatActivity {
             Intent intent = new Intent(HomeScreen.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            break;
+          case R.id.nav_myprofile:
+            startActivity(new Intent(HomeScreen.this, ProfileActivity.class));
+            break;
+          case R.id.nav_version:
+            AlertDialog.Builder builder =  new AlertDialog.Builder(HomeScreen.this, android.R.style.Theme_Material_Dialog_Alert);
+            builder.setTitle("Presenta Version")
+              .setMessage("Version : 1.0.0")
+              .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                  // continue with delete
+                }
+              }).show();
+            break;
+          case R.id.nav_changepassword:
+            startActivity(new Intent(HomeScreen.this, ChangePasswordActivity.class));
             break;
         }
         menuItem.setChecked(true);

@@ -21,9 +21,9 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:layout_alignParentTop="true" />
 
-    <GridView
+    <ListView
         android:layout_below="@+id/toolbar"
-        android:id="@+id/gridview"
+        android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="auto_fit"
@@ -32,7 +32,7 @@
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        android:layout_weight="1"></GridView>
+        android:layout_weight="1"></ListView>
 
   </RelativeLayout>
 
