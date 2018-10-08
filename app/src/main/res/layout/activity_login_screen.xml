@@ -41,11 +41,12 @@
           android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/loginEmail"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:drawableTint="#FF4081"
             android:singleLine="true"
-            android:hint="User Name"
+            android:hint="Enter your Email ID"
             android:inputType="textEmailAddress" />
       </android.support.design.widget.TextInputLayout>
 
@@ -54,14 +55,23 @@
           android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/loginPassword"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:singleLine="true"
             android:drawableTint="#FF4081"
-            android:hint="Password"
-            android:inputType="numberPassword" />
+            android:hint="Enter Password"
+            android:inputType="textPassword" />
       </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/login_error"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dip"
+            android:textColor="#e30000"
+            android:textStyle="bold" />
 
       <TextView
           android:layout_width="wrap_content"
@@ -80,7 +90,7 @@
           android:textAllCaps="false"
           android:textColor="#fff"
           android:textSize="18sp"
-          android:onClick="loginClick" />
+          android:onClick="loginUser" />
 
       <Button
           android:layout_width="fill_parent"

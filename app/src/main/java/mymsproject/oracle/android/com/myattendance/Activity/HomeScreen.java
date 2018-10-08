@@ -85,7 +85,7 @@ public class HomeScreen extends AppCompatActivity {
             break;
           case R.id.nav_version:
             AlertDialog.Builder builder =  new AlertDialog.Builder(HomeScreen.this, android.R.style.Theme_Material_Dialog_Alert);
-            builder.setTitle("Presenta Version")
+            builder.setTitle("Prezenta Version")
               .setMessage("Version : 1.0.0")
               .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
