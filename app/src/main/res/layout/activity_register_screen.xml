@@ -11,9 +11,9 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="16dp"
-      android:layout_marginTop="22dp"
+      android:layout_marginTop="16dp"
       android:gravity="center_horizontal"
-      android:text="Account Login"
+      android:text="Register"
       android:textColor="#fff"
       android:textSize="26sp"
       android:textStyle="bold" />
@@ -24,7 +24,7 @@
       android:layout_below="@+id/login_title"
       android:layout_marginLeft="30dp"
       android:layout_marginRight="30dp"
-      android:layout_marginTop="30dp"
+      android:layout_marginTop="5dp"
       android:background="#fff"
       android:elevation="4dp"
       android:orientation="vertical"
@@ -34,18 +34,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="30dp">
+        android:paddingTop="5dp">
 
-      <android.support.design.widget.TextInputLayout
+        <android.support.design.widget.TextInputLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/registerName"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:drawableTint="#FF4081"
             android:singleLine="true"
-            android:hint="User Name"
+            android:hint="Name"
             android:inputType="textEmailAddress" />
       </android.support.design.widget.TextInputLayout>
 
@@ -54,11 +55,12 @@
           android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/registerEmail"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:drawableTint="#FF4081"
             android:singleLine="true"
-            android:hint="College Name"
+            android:hint="Email-ID"
             android:inputType="textEmailAddress" />
       </android.support.design.widget.TextInputLayout>
 
@@ -67,11 +69,12 @@
           android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/registerMobileNumber"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:drawableTint="#FF4081"
             android:singleLine="true"
-            android:hint="User ID"
+            android:hint="Mobile Number"
             android:inputType="textEmailAddress" />
       </android.support.design.widget.TextInputLayout>
 
@@ -80,20 +83,59 @@
           android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/registerAddress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:singleLine="true"
+            android:drawableTint="#FF4081"
+            android:hint="Address"
+            android:inputType="textEmailAddress" />
+      </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+      <EditText
+          android:id="@+id/registerDepartmentName"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:singleLine="true"
+          android:drawableTint="#FF4081"
+          android:hint="Department Name"
+          android:inputType="textEmailAddress" />
+    </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/registerPassword"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:singleLine="true"
             android:drawableTint="#FF4081"
             android:hint="Password"
-            android:inputType="numberPassword" />
+            android:inputType="textPassword" />
       </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            android:id="@+id/register_error"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dip"
+            android:textColor="#e30000"
+            android:textStyle="bold" />
 
       <Button
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="22dp"
+          android:layout_margin="20dp"
           android:background="#d67601"
           android:text="Register"
           android:textAllCaps="false"
