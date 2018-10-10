@@ -60,7 +60,9 @@ public class HomeScreen extends AppCompatActivity {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
-          qrScan.initiateScan();
+         // qrScan.initiateScan();
+          Intent intent = new Intent(HomeScreen.this, FingerprintActivity.class);
+          startActivity(intent);
         } else {
           Intent intent = new Intent(HomeScreen.this, StatsActivity.class);
           intent.putExtra("position", position);

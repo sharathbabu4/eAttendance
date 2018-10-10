@@ -4,5 +4,18 @@
   <string name="change_password">Change Password</string>
   <string name="sign_out">Sign Out</string>
   <string name="version">Version</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings.</string>
+  <string name="atleast_one_fingerprint_needed">Register at least one fingerprint in Settings or use default Login to continue…</string>
+  <string name="fingerprint_permission_not_enabled">Fingerprint authentication permission not enabled…</string>
+  <string name="fingerprint_scanner_not_found">Your Device does not have a Fingerprint Sensor. Please use default Login to continue…</string>
+  <string name="fingerprint_auth_error">Fingerprint Authentication error</string>
+  <string name="fingerprint_auth_failed">Fingerprint Authentication failed</string>
+  <string name="fingerprint_auth_help">Fingerprint Authentication help</string>
+  <string name="fingerprint_auth_success">Fingerprint Authentication succeeded. Navigating to Home screen...</string>
+  <string name="redirect_login">Redirecting to \'Login\' functionality…</string>
+  <string name="bio_scan_limit_exceeded">Biometric scan disabled as scan limits exceeded.</string>
+  <string name="title_fingerprint">Biometric Sign-in</string>
+  <string name="desc_fingerprint">Please place your finger on the scanner to initiate biometric scan.</string>
+  <string name="back_to_login">Back to Login</string>
 
 </resources>
