@@ -109,9 +109,6 @@ public class HomeScreen extends AppCompatActivity {
                 }
               }).show();
             break;
-          case R.id.nav_changepassword:
-            startActivity(new Intent(HomeScreen.this, ChangePasswordActivity.class));
-            break;
         }
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
