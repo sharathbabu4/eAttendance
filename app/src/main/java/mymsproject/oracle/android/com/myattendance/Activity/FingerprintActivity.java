@@ -275,6 +275,7 @@ public class FingerprintActivity extends AppCompatActivity {
             e.printStackTrace();
             //Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
         }
+        finish();
         }
 
     /**
