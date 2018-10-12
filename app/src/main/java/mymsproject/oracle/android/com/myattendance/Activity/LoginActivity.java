@@ -2,7 +2,9 @@ package mymsproject.oracle.android.com.myattendance.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,6 +37,11 @@ public class LoginActivity extends Activity {
     public static final String REQUEST_METHOD = "GET";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
+
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String Email = "email_id";
+    public static final String LoggedStatus = "isLoggedIn";
+    SharedPreferences sharedpreferences;
 
     // Progress Dialog Object
     ProgressDialog prgDialog;
@@ -69,6 +76,12 @@ public class LoginActivity extends Activity {
 
         // Set Cancelable as False
         prgDialog.setCancelable(false);
+
+      sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+      if(sharedpreferences.getBoolean(LoggedStatus, false)){
+        navigatetoHomeActivity();
+      }
     }
 
     /**
@@ -83,7 +96,11 @@ public class LoginActivity extends Activity {
         // Get Password Edit View Value
         password = pwdET.getText().toString();
 
-        // Instantiate Http Request Param Object
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(Email, email);
+        editor.commit();
+
+      // Instantiate Http Request Param Object
         RequestParams params = new RequestParams();
 
         // When Email Edit View and Password Edit View have values other than Null
@@ -144,6 +161,9 @@ public class LoginActivity extends Activity {
                         if (statusCode == 200 && emailIdInResponse.equals(email) && passwordInResponse.equals(password)) {
                             Toast.makeText(getApplicationContext(), "You are successfully logged in!", Toast.LENGTH_LONG).show();
                             // Navigate to Home screen
+                          SharedPreferences.Editor editor = sharedpreferences.edit();
+                          editor.putBoolean(LoggedStatus, true);
+                          editor.commit();
                             navigatetoHomeActivity();
                         } else if (!passwordInResponse.equals(password)) {
                             Toast.makeText(getApplicationContext(), "Password is incorrect.", Toast.LENGTH_LONG).show();
@@ -201,7 +221,7 @@ public class LoginActivity extends Activity {
      */
     public void navigatetoHomeActivity(){
         Intent homeIntent = new Intent(getApplicationContext(),HomeScreen.class);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(homeIntent);
     }
 

@@ -89,13 +89,11 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         final TextView textView = (TextView) ((Activity)context).findViewById(R.id.errorText);
         final TextView infoView = (TextView) ((Activity)context).findViewById(R.id.desc);
         final ImageView iconView = (ImageView) ((Activity)context).findViewById(R.id.icon);
-        final TextView bactToLogin = (TextView) ((Activity)context).findViewById(R.id.backToLogin);
 
         textView.setText(e);
         System.out.println("Error ; "+e);
         if(success){
             textView.setTextColor(ContextCompat.getColor(context, R.color.zxing_transparent));
-            bactToLogin.setVisibility(View.GONE);
             qrScan.initiateScan();
 
             // startActivityClearStack(HomeScreen.class,false);

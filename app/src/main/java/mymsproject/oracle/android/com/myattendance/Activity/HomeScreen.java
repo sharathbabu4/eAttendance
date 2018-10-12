@@ -1,7 +1,9 @@
 package mymsproject.oracle.android.com.myattendance.Activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,6 +38,11 @@ public class HomeScreen extends AppCompatActivity {
 
   private List<String> mainList = new ArrayList();
 
+  public static final String MyPREFERENCES = "MyPrefs" ;
+  public static final String Email = "email_id";
+  public static final String LoggedStatus = "isLoggedIn";
+  SharedPreferences sharedpreferences;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -50,6 +57,8 @@ public class HomeScreen extends AppCompatActivity {
     mainList.clear();
     mainList.add(0, "QR-Code Scanner");
     mainList.add(1, "Attendance Report");
+
+    sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
     qrScan = new IntentIntegrator(this);
 
@@ -78,6 +87,11 @@ public class HomeScreen extends AppCompatActivity {
       public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
           case R.id.nav_signout:
+            if(sharedpreferences.getBoolean(LoggedStatus, false)){
+              SharedPreferences.Editor editor = sharedpreferences.edit();
+              editor.putBoolean(LoggedStatus, false);
+              editor.commit();
+            }
             Intent intent = new Intent(HomeScreen.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
