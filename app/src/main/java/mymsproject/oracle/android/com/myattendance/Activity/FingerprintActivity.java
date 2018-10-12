@@ -17,14 +17,26 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.Base64;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import mymsproject.oracle.android.com.myattendance.Helper.FingerprintHandler;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
@@ -33,6 +45,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -49,6 +63,9 @@ public class FingerprintActivity extends AppCompatActivity {
     private TextView textView;
     Context context;
     FingerprintHandler helper;
+    double longitude ;
+    double latitude ;
+    GPSTracker gps;
 
     @RequiresApi (api = Build.VERSION_CODES.M)
     @Override
@@ -57,6 +74,19 @@ public class FingerprintActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fingerprint);
         context = getApplicationContext();
 
+        gps = new GPSTracker(FingerprintActivity.this);
+        // check if GPS enabled
+        if(gps.canGetLocation()){
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+            // \n is for new line
+            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
+        }
 
         // Initializing Android Keyguard Manager to verify the device lock screen details
         KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
@@ -171,5 +201,95 @@ public class FingerprintActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         helper.cancelAuth();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                Log.i("Supreeth", "Result : " + result);
+                if (result.getContents() == null) {
+                    Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.i("Supreeth", "JSON RESULT CONTENTS : " + result.getContents());
+                    if (result.getContents().length() != 0) {
+                        String url = result.getContents();
+                        Log.d("The scanned URL = ", "url" + url);
+                        //prgDialog.show();
+                        //JSONObject obj = new JSONObject(result.getContents());
+                        //Log.i("Supreeth", "JSON RESULT CONTENTS : " + obj);
+                        Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+
+                        latitude = gps.getLatitude();
+                        longitude = gps.getLongitude();
+                        Log.i("Supreeth", "Location : " + latitude + "Long :" + longitude);
+
+                        JSONObject jsonParams = new JSONObject();
+                        jsonParams.put("timestamp", getCurrentTimeStamp());
+                        jsonParams.put("location_lat", latitude);
+                        jsonParams.put("location_long", longitude);
+                        jsonParams.put("biometric", "{}");
+                        Log.i("Supreeth", "JSON Array : " + jsonParams);
+
+                        // Make RESTful webservice call using AsyncHttpClient object
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        String userName = "cheth@gmail.com";
+                        String passWord = "nice";
+                        if (userName != null && passWord != null) {
+                            byte[] base64bytes = Base64.encode((userName + ":" + passWord).getBytes(), Base64.DEFAULT);
+                            String credentials = new String(base64bytes);
+                            //headers.add(new BasicHeader("Authorization", "basic" + " " + credentials));
+                            client.addHeader("Authorization", "basic" + " " + credentials);
+                        }
+                        //  client.setBasicAuth(userName,passWord);
+                        client.addHeader("Content-type", "application/json");
+                        client.addHeader("Accept", "text/plain");
+                        client.addHeader("Cache-control", "no-cache");
+
+                        StringEntity entity = new StringEntity(jsonParams.toString());
+                        Log.i("Supreeth", "Entity:" + entity);
+                        client.post(this, url, entity, "application/json", new AsyncHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                            }
+                        });
+                    } else {
+                        Toast.makeText(this, "The QR code is empty. Please dont scan after college hours. Please contact Admin.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+            //Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+        }
+        }
+
+    /**
+     *
+     * @return yyyy-MM-dd HH:mm:ss formate date as string
+     */
+    public static String getCurrentTimeStamp(){
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
