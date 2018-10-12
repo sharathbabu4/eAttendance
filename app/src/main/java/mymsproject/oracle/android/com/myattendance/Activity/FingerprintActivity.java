@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+
 import mymsproject.oracle.android.com.myattendance.Helper.FingerprintHandler;
 
 import java.io.IOException;
@@ -47,7 +49,6 @@ public class FingerprintActivity extends AppCompatActivity {
     private TextView textView;
     Context context;
     FingerprintHandler helper;
-
 
     @RequiresApi (api = Build.VERSION_CODES.M)
     @Override
@@ -170,17 +171,5 @@ public class FingerprintActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         helper.cancelAuth();
-    }
-
-    @RequiresApi (api = Build.VERSION_CODES.M)
-    public void backToLogin(View view) {
-        helper.cancelAuth();
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-
     }
 }

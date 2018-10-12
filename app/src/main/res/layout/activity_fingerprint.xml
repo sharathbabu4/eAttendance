@@ -64,22 +64,6 @@
             android:gravity="center"/>
 
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/zxing_status_text"
-            android:textStyle="italic"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:id="@+id/backToLogin"
-            android:text="@string/back_to_login"
-            android:paddingEnd="30dp"
-            android:paddingStart="30dp"
-            android:layout_marginTop="100dp"
-            android:onClick="backToLogin"
-            android:visibility="visible"
-            android:gravity="center"/>
-
     </LinearLayout>
 
 </RelativeLayout>

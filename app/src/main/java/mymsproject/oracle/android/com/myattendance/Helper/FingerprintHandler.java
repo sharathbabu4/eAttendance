@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+
 import mymsproject.oracle.android.com.myattendance.Activity.FingerprintActivity;
 import mymsproject.oracle.android.com.myattendance.Activity.HomeScreen;
 import mymsproject.oracle.android.com.myattendance.R;
@@ -29,6 +31,7 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
     private Context context;
     CancellationSignal cancellationSignal;
+    private IntentIntegrator qrScan;
 
     private int failedBiometricCount=0;
 
@@ -42,6 +45,7 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     // Constructor
     public FingerprintHandler(Context mContext) {
         context = mContext;
+        qrScan = new IntentIntegrator((Activity)context);
     }
 
 
@@ -92,7 +96,9 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         if(success){
             textView.setTextColor(ContextCompat.getColor(context, R.color.zxing_transparent));
             bactToLogin.setVisibility(View.GONE);
-            startActivityClearStack(HomeScreen.class,false);
+            qrScan.initiateScan();
+
+            // startActivityClearStack(HomeScreen.class,false);
         }else{
             final String message = new String();
             boolean redirect = false;
