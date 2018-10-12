@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mymsproject.oracle.android.com.myattendance">
 
-  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.INTERNET" />
 
   <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
@@ -27,6 +29,7 @@
     <activity android:name=".Activity.ChangePasswordActivity"></activity>
     <activity android:name=".Activity.FingerprintActivity"></activity>
 
+    <service android:enabled="true" android:name="mymsproject.oracle.android.com.myattendance.Activity.GPSTracker" />
   </application>
 
 </manifest>
