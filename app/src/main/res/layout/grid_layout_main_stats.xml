@@ -15,7 +15,8 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:textStyle="bold|italic"
-      android:textSize="18sp" />
+      android:textSize="18sp"
+      android:inputType="textMultiLine" />
 
   <TextView
       android:id="@+id/grid_text_view1"
