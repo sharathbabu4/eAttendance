@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -148,7 +149,7 @@ public class HomeScreen extends AppCompatActivity{
       latitude = gps.getLatitude();
       longitude = gps.getLongitude();
       // \n is for new line
-      Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+      //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
     }else{
       // can't get location
       // GPS or Network is not enabled
@@ -254,12 +255,13 @@ public class HomeScreen extends AppCompatActivity{
    *
    * @return yyyy-MM-dd HH:mm:ss formate date as string
    */
-  public static String getCurrentTimeStamp(){
+  public static String  getCurrentTimeStamp(){
     try {
 
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      String currentDateTime = dateFormat.format(new Date()); // Find todays date
-      return currentDateTime;
+      dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+      String currentDateTimeinUTC = dateFormat.format(new Date()); // Find todays date
+      return currentDateTimeinUTC;
     } catch (Exception e) {
       e.printStackTrace();
       return null;

@@ -40,6 +40,7 @@ public class LoginActivity extends Activity {
 
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String Email = "email_id";
+    public static final String Password = "password";
     public static final String LoggedStatus = "isLoggedIn";
     SharedPreferences sharedpreferences;
 
@@ -98,6 +99,7 @@ public class LoginActivity extends Activity {
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString(Email, email);
+        editor.putString(Password, password);
         editor.commit();
 
       // Instantiate Http Request Param Object

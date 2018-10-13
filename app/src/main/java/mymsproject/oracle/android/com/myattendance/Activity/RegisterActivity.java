@@ -246,7 +246,7 @@ public class RegisterActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(new String(responseBody));
                         jsonObject.getString("message");
                         //Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                        errorMsg.setText(jsonObject.getString("message"));
+                        //errorMsg.setText(jsonObject.getString("message"));
                         Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                     }
 

@@ -5,8 +5,10 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.KeyguardManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -33,6 +35,8 @@ import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 import mymsproject.oracle.android.com.myattendance.Helper.FingerprintHandler;
 
 import java.io.IOException;
@@ -46,7 +50,9 @@ import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -54,6 +60,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import mymsproject.oracle.android.com.myattendance.R;
+
+import static mymsproject.oracle.android.com.myattendance.Activity.LoginActivity.Email;
+import static mymsproject.oracle.android.com.myattendance.Activity.LoginActivity.MyPREFERENCES;
+import static mymsproject.oracle.android.com.myattendance.Activity.LoginActivity.Password;
 
 public class FingerprintActivity extends AppCompatActivity {
     private KeyStore keyStore;
@@ -66,6 +76,7 @@ public class FingerprintActivity extends AppCompatActivity {
     double longitude ;
     double latitude ;
     GPSTracker gps;
+    ProgressDialog prgDialog;
 
     @RequiresApi (api = Build.VERSION_CODES.M)
     @Override
@@ -80,7 +91,7 @@ public class FingerprintActivity extends AppCompatActivity {
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
             // \n is for new line
-            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
         }else{
             // can't get location
             // GPS or Network is not enabled
@@ -227,41 +238,95 @@ public class FingerprintActivity extends AppCompatActivity {
 
                         JSONObject jsonParams = new JSONObject();
                         jsonParams.put("timestamp", getCurrentTimeStamp());
-                        jsonParams.put("location_lat", latitude);
-                        jsonParams.put("location_long", longitude);
+                        jsonParams.put("location_lat", 22.4);
+                        jsonParams.put("location_long", 22.4);
                         jsonParams.put("biometric", "{}");
                         Log.i("Supreeth", "JSON Array : " + jsonParams);
 
                         // Make RESTful webservice call using AsyncHttpClient object
                         AsyncHttpClient client = new AsyncHttpClient();
-                        String userName = "cheth@gmail.com";
-                        String passWord = "nice";
+                        //String userName = "cheth@gmail.com";
+                        //String passWord = "nice";
+                        SharedPreferences pref = getSharedPreferences(MyPREFERENCES,MODE_PRIVATE);
+                        String userName = pref.getString(Email, null);
+                        Log.i("Supreeth", "username : " + userName);
+                        String passWord = pref.getString(Password, null);
+                        Log.i("Supreeth", "Password : " + passWord);
+
                         if (userName != null && passWord != null) {
                             byte[] base64bytes = Base64.encode((userName + ":" + passWord).getBytes(), Base64.DEFAULT);
                             String credentials = new String(base64bytes);
                             //headers.add(new BasicHeader("Authorization", "basic" + " " + credentials));
-                            client.addHeader("Authorization", "basic" + " " + credentials);
+                            client.addHeader("Authorization", "Basic" + " " + credentials);
+                            Log.i("Supreeth", "Crdentials : " + credentials);
                         }
                         //  client.setBasicAuth(userName,passWord);
-                        client.addHeader("Content-type", "application/json");
-                        client.addHeader("Accept", "text/plain");
-                        client.addHeader("Cache-control", "no-cache");
+                        //client.addHeader("Content-type", "application/json");
+                        //client.addHeader("Accept", "text/plain");
+                        //client.addHeader("Cache-control", "no-cache");
 
                         StringEntity entity = new StringEntity(jsonParams.toString());
                         Log.i("Supreeth", "Entity:" + entity);
+
+                        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                        Log.i("Supreeth", "New Entity:" + entity);
+                        Log.i("Supreeth", "New Entity Content:" + entity.getContent().toString());
+
                         client.post(this, url, entity, "application/json", new AsyncHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                try {
+                                    // JSON Object
+                                    JSONObject obj = new JSONObject(new String(responseBody));
 
+                                    // When the JSON response has status boolean value assigned with true
+                                    if (statusCode == 200) {
+                                        // Display successfully registered message using Toast
+                                        Toast.makeText(getApplicationContext(), "Successfully marked the attendance", Toast.LENGTH_LONG).show();
+                                    }
+
+                                    // Else display error message
+                                    else {
+                                        Toast.makeText(getApplicationContext(), obj.getString("error_msg"), Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
                             }
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                try {
+                                    // When Http response code is '404'
+                                    if (statusCode == 404) {
+                                        Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
+                                    }
 
+                                    // When Http response code is '500'
+                                    else if (statusCode == 500) {
+                                        Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
+                                    }
+                                    else if (statusCode == 400) {
+                                        JSONObject jsonObject = new JSONObject(new String(responseBody));
+                                        jsonObject.getString("message");
+                                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                    }
+
+                                    // When Http response code other than 404, 500
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Unexpected Error occcured! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     } else {
-                        Toast.makeText(this, "The QR code is empty. Please dont scan after college hours. Please contact Admin.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "The QR code is empty. Please don't scan after college hours. Please contact Admin.", Toast.LENGTH_LONG).show();
                     }
                 }
             } else {
@@ -274,6 +339,8 @@ public class FingerprintActivity extends AppCompatActivity {
         {
             e.printStackTrace();
             //Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         finish();
         }
@@ -286,7 +353,12 @@ public class FingerprintActivity extends AppCompatActivity {
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+            //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            dateFormat.setTimeZone(TimeZone.getTimeZone("gmt"));
+            String currentDateTime = dateFormat.format(new Date());// Find todays date
+            Log.i("Supreeth", "Time now :"+ currentDateTime);
+            //currentDateTime.replace(' ', 'T');
+            Log.i("Supreeth", "Time now after replacing:"+ currentDateTime);
             return currentDateTime;
         } catch (Exception e) {
             e.printStackTrace();
