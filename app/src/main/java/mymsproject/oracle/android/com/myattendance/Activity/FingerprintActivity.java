@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
@@ -29,6 +30,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.Base64;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,8 +41,12 @@ import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 import mymsproject.oracle.android.com.myattendance.Helper.FingerprintHandler;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
@@ -238,8 +244,8 @@ public class FingerprintActivity extends AppCompatActivity {
 
                         JSONObject jsonParams = new JSONObject();
                         jsonParams.put("timestamp", getCurrentTimeStamp());
-                        jsonParams.put("location_lat", 22.4);
-                        jsonParams.put("location_long", 22.4);
+                        jsonParams.put("location_lat", "22.4");
+                        jsonParams.put("location_long", "22.4");
                         jsonParams.put("biometric", "{}");
                         Log.i("Supreeth", "JSON Array : " + jsonParams);
 
@@ -253,11 +259,12 @@ public class FingerprintActivity extends AppCompatActivity {
                         String passWord = pref.getString(Password, null);
                         Log.i("Supreeth", "Password : " + passWord);
 
+                        String credentials="";
                         if (userName != null && passWord != null) {
                             byte[] base64bytes = Base64.encode((userName + ":" + passWord).getBytes(), Base64.DEFAULT);
-                            String credentials = new String(base64bytes);
+                            credentials = new String(base64bytes);
                             //headers.add(new BasicHeader("Authorization", "basic" + " " + credentials));
-                            client.addHeader("Authorization", "Basic" + " " + credentials);
+                            //client.addHeader("Authorization", "Basic" + " " + credentials);
                             Log.i("Supreeth", "Crdentials : " + credentials);
                         }
                         //  client.setBasicAuth(userName,passWord);
@@ -272,59 +279,71 @@ public class FingerprintActivity extends AppCompatActivity {
                         Log.i("Supreeth", "New Entity:" + entity);
                         Log.i("Supreeth", "New Entity Content:" + entity.getContent().toString());
 
-                        client.post(this, url, entity, "application/json", new AsyncHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                                try {
-                                    // JSON Object
-                                    JSONObject obj = new JSONObject(new String(responseBody));
+                        SendPostData sendPostData = new SendPostData();
+                        sendPostData.execute(jsonParams.toString(),url,credentials);
 
-                                    // When the JSON response has status boolean value assigned with true
-                                    if (statusCode == 200) {
-                                        // Display successfully registered message using Toast
-                                        Toast.makeText(getApplicationContext(), "Successfully marked the attendance", Toast.LENGTH_LONG).show();
-                                    }
 
-                                    // Else display error message
-                                    else {
-                                        Toast.makeText(getApplicationContext(), obj.getString("error_msg"), Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
-                                    e.printStackTrace();
-                                }
-                            }
+                        /*RequestParams requestparam = new RequestParams();
+                        requestparam.put("timestamp", getCurrentTimeStamp());
+                        requestparam.put("location_lat", "22.4");
+                        requestparam.put("location_long", "22.4");
+                        requestparam.put("biometric", "{}");
+                        requestparam.setUseJsonStreamer(true);*/
 
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                                try {
-                                    // When Http response code is '404'
-                                    if (statusCode == 404) {
-                                        Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
-                                    }
-
-                                    // When Http response code is '500'
-                                    else if (statusCode == 500) {
-                                        Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
-                                    }
-                                    else if (statusCode == 400) {
-                                        JSONObject jsonObject = new JSONObject(new String(responseBody));
-                                        jsonObject.getString("message");
-                                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                                    }
-
-                                    // When Http response code other than 404, 500
-                                    else {
-                                        Toast.makeText(getApplicationContext(), "Unexpected Error occcured! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+                        //client.post(this, url, requestparam , new AsyncHttpResponseHandler(){
+//                        client.post(this, url, entity, "application/json", new AsyncHttpResponseHandler() {
+//                            @Override
+//                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+//                                try {
+//                                    // JSON Object
+//                                    JSONObject obj = new JSONObject(new String(responseBody));
+//
+//                                    // When the JSON response has status boolean value assigned with true
+//                                    if (statusCode == 200) {
+//                                        // Display successfully registered message using Toast
+//                                        Toast.makeText(getApplicationContext(), "Successfully marked the attendance", Toast.LENGTH_LONG).show();
+//                                    }
+//
+//                                    // Else display error message
+//                                    else {
+//                                        Toast.makeText(getApplicationContext(), obj.getString("error_msg"), Toast.LENGTH_LONG).show();
+//                                    }
+//                                } catch (JSONException e) {
+//                                    // TODO Auto-generated catch block
+//                                    Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+//                                try {
+//                                    // When Http response code is '404'
+//                                    if (statusCode == 404) {
+//                                        Toast.makeText(getApplicationContext(), "Requested resource not found", Toast.LENGTH_LONG).show();
+//                                    }
+//
+//                                    // When Http response code is '500'
+//                                    else if (statusCode == 500) {
+//                                        Toast.makeText(getApplicationContext(), "Something went wrong at server end", Toast.LENGTH_LONG).show();
+//                                    }
+//                                    else if (statusCode == 400) {
+//                                        JSONObject jsonObject = new JSONObject(new String(responseBody));
+//                                        jsonObject.getString("message");
+//                                        Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+//                                    }
+//
+//                                    // When Http response code other than 404, 500
+//                                    else {
+//                                        Toast.makeText(getApplicationContext(), "Unexpected Error occcured! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
+//                                    }
+//                                } catch (JSONException e) {
+//                                    // TODO Auto-generated catch block
+//                                    Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        });
                     } else {
                         Toast.makeText(this, "The QR code is empty. Please don't scan after college hours. Please contact Admin.", Toast.LENGTH_LONG).show();
                     }
@@ -344,6 +363,48 @@ public class FingerprintActivity extends AppCompatActivity {
         }
         finish();
         }
+
+    class SendPostData extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+
+                String JsonDATA = params[0];
+                String scannedUrl = params[1];
+                String authorization = "Basic"+ " " +params[2];
+
+                URL url = new URL(scannedUrl);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+                httpURLConnection.setRequestProperty("Content-Type", "application/json");
+                httpURLConnection.setRequestProperty("Authorization", authorization);
+                httpURLConnection.setRequestProperty("Accept", "*/*");
+
+                httpURLConnection.connect();
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(JsonDATA);
+                wr.flush();
+                wr.close();
+
+                // Response: 400
+                Log.i("Response", httpURLConnection.getResponseCode() + "");
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    }
 
     /**
      *
